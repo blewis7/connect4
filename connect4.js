@@ -1,0 +1,202 @@
+const columnOne = [...document.getElementsByClassName('column-one')];
+const columnTwo = [...document.getElementsByClassName('column-two')];
+const columnThree = [...document.getElementsByClassName('column-three')];
+const columnFour = [...document.getElementsByClassName('column-four')];
+const columnFive = [...document.getElementsByClassName('column-five')];
+const columnSix = [...document.getElementsByClassName('column-six')];
+const columnSeven = [...document.getElementsByClassName('column-seven')];
+const input = document.querySelectorAll('input');
+const above = document.querySelector('.above-grid');
+const div = document.querySelector('.game-grid');
+const game = [...div.childNodes];
+const gameBoard = [];
+let player = 1;
+let turns = 0;
+
+for (let i = 0; i < game.length; i++){
+    if (i % 2 !== 0){
+        gameBoard.push(game[i]);
+    }
+}
+
+const winningArrays = [ // Received code from https://github.com/kubowania/connect-four/blob/master/app.js
+    [0, 1, 2, 3],
+    [41, 40, 39, 38],
+    [7, 8, 9, 10],
+    [34, 33, 32, 31],
+    [14, 15, 16, 17],
+    [27, 26, 25, 24],
+    [21, 22, 23, 24],
+    [20, 19, 18, 17],
+    [28, 29, 30, 31],
+    [13, 12, 11, 10],
+    [35, 36, 37, 38],
+    [6, 5, 4, 3],
+    [0, 7, 14, 21],
+    [41, 34, 27, 20],
+    [1, 8, 15, 22],
+    [40, 33, 26, 19],
+    [2, 9, 16, 23],
+    [39, 32, 25, 18],
+    [3, 10, 17, 24],
+    [38, 31, 24, 17],
+    [4, 11, 18, 25],
+    [37, 30, 23, 16],
+    [5, 12, 19, 26],
+    [36, 29, 22, 15],
+    [6, 13, 20, 27],
+    [35, 28, 21, 14],
+    [0, 8, 16, 24],
+    [41, 33, 25, 17],
+    [7, 15, 23, 31],
+    [34, 26, 18, 10],
+    [14, 22, 30, 38],
+    [27, 19, 11, 3],
+    [35, 29, 23, 17],
+    [6, 12, 18, 24],
+    [28, 22, 16, 10],
+    [13, 19, 25, 31],
+    [21, 15, 9, 3],
+    [20, 26, 32, 38],
+    [36, 30, 24, 18],
+    [5, 11, 17, 23],
+    [37, 31, 25, 19],
+    [4, 10, 16, 22],
+    [2, 10, 18, 26],
+    [39, 31, 23, 15],
+    [1, 9, 17, 25],
+    [40, 32, 24, 16],
+    [9, 17, 25, 33],
+    [8, 16, 24, 32],
+    [11, 17, 23, 29],
+    [12, 18, 24, 30],
+    [1, 2, 3, 4],
+    [5, 4, 3, 2],
+    [8, 9, 10, 11],
+    [12, 11, 10, 9],
+    [15, 16, 17, 18],
+    [19, 18, 17, 16],
+    [22, 23, 24, 25],
+    [26, 25, 24, 23],
+    [29, 30, 31, 32],
+    [33, 32, 31, 30],
+    [36, 37, 38, 39],
+    [40, 39, 38, 37],
+    [7, 14, 21, 28],
+    [8, 15, 22, 29],
+    [9, 16, 23, 30],
+    [10, 17, 24, 31],
+    [11, 18, 25, 32],
+    [12, 19, 26, 33],
+    [13, 20, 27, 34],
+]
+
+let button = document.querySelector('button');
+button.addEventListener('click', () => {
+    above.classList.remove('invisible');
+    div.classList.remove('invisible');
+    button.classList.add('invisible')
+});
+
+function checkForWin(){
+    for (let i = 0; i < winningArrays.length; i++){
+        const card1 = gameBoard[winningArrays[i][0]];
+        const card2 = gameBoard[winningArrays[i][1]];
+        const card3 = gameBoard[winningArrays[i][2]];
+        const card4 = gameBoard[winningArrays[i][3]];
+
+        setTimeout (function() {
+            if (
+                card1.classList.contains('red-piece') &&
+                card2.classList.contains('red-piece') &&
+                card3.classList.contains('red-piece') &&
+                card4.classList.contains('red-piece')
+            ) {
+                alert(`${input[0].value} Wins!`);
+            }
+            if (
+                card1.classList.contains('yellow-piece') &&
+                card2.classList.contains('yellow-piece') &&
+                card3.classList.contains('yellow-piece') &&
+                card4.classList.contains('yellow-piece')
+            ) {
+                alert(`${input[1].value} Wins!`);
+            } 
+        }, 100);
+    }
+}
+
+const columns = (columnNumber) => {
+    for (let i = columnNumber.length-1; i >= 0; i--){
+        columnNumber[i].addEventListener('mouseover', () => {
+            if (player === 1){
+                columnNumber[0].classList.add('red-piece-above');
+            }
+            else if (player === 2){
+                columnNumber[0].classList.add('yellow-piece-above');
+            }
+        });
+    
+        columnNumber[i].addEventListener('mouseout', () => {
+            if (player === 1){
+                columnNumber[0].classList.remove('red-piece-above');
+            }
+            else if (player === 2){
+                columnNumber[0].classList.remove('yellow-piece-above');
+            }
+        });
+        
+        columnNumber[i].addEventListener('click', () => {
+            if (player === 1){
+                if (columnNumber[columnNumber.length-1].classList.contains('cell')){
+                    columnNumber[columnNumber.length-1].classList.remove('cell');
+                    columnNumber[columnNumber.length-1].classList.add('red-piece');
+                    columnNumber.pop();
+                    columnNumber[0].classList.remove('red-piece-above');
+                    columnNumber[0].classList.add('yellow-piece-above');
+                    player = 2;
+                    turns++;
+                    checkForWin(); 
+                    setTimeout (function() {
+                        if (turns === 42){
+                            alert('To rematch, refresh page!')
+                        }
+                    }, 100);
+                }
+                if (columnNumber.length <= 1){
+                    return;
+                } 
+            }
+            else if (player === 2){
+                if (columnNumber[columnNumber.length-1].classList.contains('cell')){
+                    columnNumber[columnNumber.length-1].classList.remove('cell');
+                    columnNumber[columnNumber.length-1].classList.add('yellow-piece');
+                    columnNumber.pop();
+                    columnNumber[0].classList.remove('yellow-piece-above');
+                    columnNumber[0].classList.add('red-piece-above');
+                    player = 1;
+                    turns++;
+                    checkForWin(); 
+                    setTimeout (function() {
+                        if (turns === 42){
+                            alert('To rematch, refresh page!')
+                        }
+                    }, 100);
+                }
+                if (columnNumber.length <= 1){
+                    return;
+                }
+            }
+        }); 
+         
+    }
+}
+
+columns(columnOne);
+columns(columnTwo);
+columns(columnThree);
+columns(columnFour);
+columns(columnFive);
+columns(columnSix);
+columns(columnSeven);
+
